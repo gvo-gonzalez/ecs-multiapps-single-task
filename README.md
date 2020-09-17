@@ -23,13 +23,13 @@ Create infraestructure with terraform
 
 9. Configure nginx virtual hosts
 
-    Edit node app template file Nginx/conf/nodejsapp.conf
+    Edit node app template file DockerEnv/Nginx/conf/nodejsapp.conf
 
         1. Change server_name value and if required proxy_pass variable that points to your backend nodejs server
 
         # WARNING!!! Backend name MUST BE the same as defined in "nodecontainer_name" variable in terraform.tfvars  file
     
-    Edit file Nginx/conf/phpapp.conf
+    Edit file DockerEnv/Nginx/conf/phpapp.conf
 
         2. Change server_name value and if required fastcgi_pass variable that points to your backend php-fpm server
 
@@ -49,12 +49,16 @@ Create infraestructure with terraform
     # Change your repository here
     git clone https://github.com/user-or-company/your-nodejs-app.git DockerEnv/appstack/nodejsapp
 
-    docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/example-nodejs:TAG_NUM -f DockerEnv/NodeJS/Dockerfile DockerEnv/appstack/nodejsapp/.
+    docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/example-nodejs:TAG_NUM -f DockerEnv/NodeJS/Dockerfile DockerEnv/.appstack/nodejsapp/.
 
     docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/nginx-proxy:TAG_NUM -f DockerEnv/Nginx/Dockerfile DockerEnv/.
 
 11. Uploads images
     `aws ecr get-login --no-include-email`
-    docker push aws_account_id.dkr.ecr.region.amazonaws.com/example-laravel:TAG_NUM
-    docker push docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/example-nodejs:TAG_NUM
-    docker push docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/nginx-proxy:TAG_NUM
+    docker push aws_account_id.dkr.ecr.region.amazonaws.com/ecr-repo-name:TAG_NUM
+    docker push docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/ecr-repo-name:TAG_NUM
+    docker push docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/ecr-repo-name:TAG_NUM
+
+12. Refresh terraform states
+
+terraform apply -target aws_ecs_service.ecsstack-ecs-service -var svc_running_tasks=1 -var nodeapp_version_on_setup=TAG_NUM -var phpapp_version_on_setup=TAG_NUM -var nginx_version_on_setup=TAG_NUM
