@@ -1,0 +1,65 @@
+# AWS required variables to 
+## 1. connect to your environment
+aws_region              = ""
+aws_accessKey           = ""
+aws_secretKey           = ""
+
+## 2. attach an existing certificate to your loadbalancer
+ssl_certificate_arn     = ""
+
+## 3. give a name to our docker repository
+ecr_stack_repo_name     = ""
+
+# Autoscaling group definition
+# Adjust this values according to your needs
+instance_type           = "t2.micro"
+asg_minSize             = 1
+asg_maxSize             = 2
+
+# Set ssh_keys that will load our instances
+# Create a directory named "awskeys" in your terraform directory
+# Copy an existing public key to be used with this stack
+# Or create a new one running this command ssh-keygen -t rsa -b 2048 -f awskeys/id_rsa
+pub_sshkey_path          = "awskeys/your-ssh-key.pub"
+
+# Jenkins stack definition
+jenkins_ec2_type         = "t2.micro"
+ebs_device_name          = "/dev/xvdh"
+
+# Container task definitions variables
+ecs_cluster_name         = "your_cluster_name"
+
+# WARNING!!!
+# Containers names must be the same as defined 
+# in your nginx config files that were added to 
+# your nginx config directory /etc/nginx/conf.d 
+# when the nginx image was build
+
+nginx_container_name     = "nginx_sidecar"
+nodecontainer_name       = "nodejsapp"
+nginx_fastcgi_app        = "phpapp"
+nodeapp_working_dir      = "/usr/local/app"
+phpapp_working_dir       = "/var/www"
+
+# Tasks number to keep running
+svc_running_tasks        = 1
+
+# Base version to configure tasks definitions
+nodeapp_version_on_setup = 0
+phpapp_version_on_setup  = 0
+nginx_version_on_setup   = 0   
+
+# RDS required variables
+db_param_group_family   = "mariadb10.2"   
+db_engine               = "mariadb"
+db_engine_version       = "10.2.21"
+db_instance_class       = "db.t2.micro"
+db_identifier           = "ecs-laravel-backend"
+db_instance_name        = "laravel_backend"
+db_root_username        = "root"
+db_rootpasswd           = "s3Cur3P4s5_wd0"
+db_enable_multi_az      = "false"
+db_storage_alloc        = 100
+db_storage_type         = "gp2"
+db_bkp_retention        = 30
+final_snapshot_on_destroy  = true
