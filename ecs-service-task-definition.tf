@@ -56,8 +56,9 @@ resource "aws_ecs_service" "ecsstack-ecs-service" {
         container_name      = var.nginx_container_name
         container_port      = 80
     }
-
+    
     lifecycle {
+        ignore_changes = [task_definition, desired_count]
         create_before_destroy = true
     }
 }
